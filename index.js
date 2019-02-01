@@ -1,8 +1,7 @@
 const path = require('path'),
-		fs = require('fs');
-
-const {WebSocketStreamer,Command} = require('realityserver');
-WebSocketStreamer.websocket = require('websocket').w3cwebsocket;
+	fs = require('fs'),
+	{ WebSocketStreamer, Command } = require('realityserver'),
+	WS = require('websocket').w3cwebsocket;
 
 
 require('yargs')
@@ -53,7 +52,7 @@ function render(argv) {
 
 
 	const service = new WebSocketStreamer();
-		service.connect(url,
+		service.connect(new WS(url,undefined,undefined, { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }),
 	    () => {
 	        console.log(`loading scene: ${scene_file}`);
 	        
@@ -135,8 +134,6 @@ function render(argv) {
 	    },
 	    err => {
 	        console.error('Web Socket connection failed: ' + JSON.stringify(err));
-	    },
-	    // exta arguments to pass to WS constructor to ensure a user-agent is set to avoid an Iray bug.
-	    [undefined, { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }]
+	    }	   
 	);
 }
