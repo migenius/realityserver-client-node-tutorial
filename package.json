@@ -1,0 +1,15 @@
+{
+  "name": "node-render",
+  "version": "1.0.0",
+  "description": "Node.js renderer using the new realityserver api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "migenius",
+  "license": "ISC",
+  "dependencies": {
+    "websocket": "^1.0.28",
+    "yargs": "^12.0.5"
+  }
+}
