@@ -5,7 +5,7 @@
   },
   "parserOptions": {
     "ecmaVersion": 2017
- },
+  },
   "rules": {
     "array-bracket-spacing": ["error", "always"],
     "block-scoped-var": "warn",
