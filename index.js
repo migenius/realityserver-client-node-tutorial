@@ -62,78 +62,78 @@ async function render(argv) {
 	        
 	// service.debug_commands(true);
 
-	service.addCommand(new Command('create_scope',{scope_name:'myscope'}),undefined,undefined,true);
-	service.addCommand(new Command('use_scope',{scope_name:'myscope'}),undefined,undefined,true);
+	const [ scene_info ] = await service.queue_commands().queue(
+			new Command('create_scope',{scope_name:'myscope'}))
+		.queue(
+			new Command('use_scope',{scope_name:'myscope'}))
+		.queue(
+			new Command('import_scene',
+						{
+						    scene_name:'myscene',
+						    block:true,
+						    filename: scene_file
+						}),true)
+		.send();
 
-	service.addCommand(new Command('import_scene',
-	        						{
-									    scene_name:'myscene',
-									    block:true,
-									    filename: scene_file
-									}),
-	    (resp) => {
-	        if (resp.error) {
-	        	console.log('scene load error: ' + JSON.stringify(resp));
-	        	service.close();
-	        	return;
-	        }
-	        console.log(`rendering at ${width}x${height} for ${max_samples} iterations`);
+	if (scene_info.error) {
+		console.error(`scene load failed: ${JSON.stringify(scene_info.error)}`);
+		service.close();
+		return;
+	}
+    console.log(`rendering at ${width}x${height} for ${max_samples} iterations`);
 
-	        const camera = resp.result.camera;
-	        const options = resp.result.options;
+    const camera = scene_info.result.camera;
+    const options = scene_info.result.options;
 
-			service.addCommand(new Command('use_scope',{scope_name:'myscope'}),undefined,undefined,true);
-	        service.addCommand(new Command('camera_set_resolution',{
-	        	camera_name:camera,
-	        	resolution: {
-	        		x:parseInt(width,10),
-	        		y:parseInt(height,10)
-	        	}
-	        }),undefined,undefined,true);
-	        service.addCommand(new Command('camera_set_aspect',{
-	        	camera_name:camera,
-	        	aspect: parseFloat(width,10) / parseFloat(height,10)
-	        }),undefined,undefined,true);
-	        service.addCommand(new Command('element_set_attribute',{
-	        	element_name:options,
-	        	attribute_name: 'progressive_rendering_max_samples',
-	        	attribute_value: parseInt(max_samples,10),
-	        	attribute_type: 'Sint32'
-	        }),undefined,undefined,true);
-		
-	        service.addCommand(new Command('render',
-	        								{
-											    scene_name:'myscene',
-											    renderer:'iray',
-											    format: path.extname(filename).slice(1),
-											    render_context_options: {
-											        scheduler_mode: {
-											        	value: 'batch',
-											        	type: 'String'
-											        }
-											    }
-											}),
-			    (resp) => {
-			        service.close();
+	const [ image_info ] = await service.queue_commands().queue(
+			new Command('use_scope',{scope_name:'myscope'})
+		)
+        .queue(new Command('camera_set_resolution',{
+        	camera_name:camera,
+        	resolution: {
+        		x:parseInt(width,10),
+        		y:parseInt(height,10)
+        	}
+        }))
+        .queue(new Command('camera_set_aspect',{
+        	camera_name:camera,
+        	aspect: parseFloat(width,10) / parseFloat(height,10)
+        }))
+        .queue(new Command('element_set_attribute',{
+        	element_name:options,
+        	attribute_name: 'progressive_rendering_max_samples',
+        	attribute_value: parseInt(max_samples,10),
+        	attribute_type: 'Sint32'
+        }))
+        .queue(new Command('render',
+						{
+						    scene_name:'myscene',
+						    renderer:'iray',
+						    format: path.extname(filename).slice(1),
+						    render_context_options: {
+						        scheduler_mode: {
+						        	value: 'batch',
+						        	type: 'String'
+						        }
+						    }
+						}),true)
+        .send();
+	service.close();
 
-			        if (resp.error) {
-			            console.error('render error: ' + resp.error);
-				        return;
-			        }
-		        	const image = resp.result;
-		        	if (!image.data) {
-		        		console.error('no rendered image');
-		        		return;
-		        	}
-		        	fs.writeFile(filename,image.data,(err) => {
-						if (err) {
-							console.error('error writing file ' + err);
-						} else {
-							console.log(`image saved to ${filename}`);
-						}
-					});
-			    }
-			);
+    if (image_info.error) {
+        console.error(`render error: ${JSON.stringify(image_info.error)}`);
+        return;
+    }
+	const image = image_info.result;
+	if (!image.data) {
+		console.error('no rendered image');
+		return;
+	}
+	fs.writeFile(filename,image.data,(err) => {
+		if (err) {
+			console.error('error writing file ' + err);
+		} else {
+			console.log(`image saved to ${filename}`);
 		}
-	);
+	});
 }
