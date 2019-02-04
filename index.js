@@ -1,6 +1,6 @@
 const path = require('path'),
     fs = require('fs'),
-    { WebSocketStreamer, Command } = require('realityserver'),
+    { Service, Command } = require('realityserver'),
     WS = require('websocket').w3cwebsocket;
 
 
@@ -52,7 +52,7 @@ async function render(argv) {
 
     console.log(`connecting to: ${url}`);
 
-    const service = new WebSocketStreamer();
+    const service = new Service();
     try {
         await service.connect(new WS(url,
             undefined,
