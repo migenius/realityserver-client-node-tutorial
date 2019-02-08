@@ -78,7 +78,7 @@ async function render(argv) {
                     block:true,
                     filename: scene_file
                 }),true)
-        .send();
+        .execute();
 
     if (scene_info.error) {
         console.error(`scene load failed: ${JSON.stringify(scene_info.error)}`);
@@ -123,7 +123,7 @@ async function render(argv) {
                     }
                 }
             }),true)
-        .send();
+        .execute();
     service.close();
 
     if (image_info.error) {
