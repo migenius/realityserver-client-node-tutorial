@@ -1,6 +1,6 @@
 const path = require('path'),
     fs = require('fs'),
-    { Service, Command } = require('realityserver'),
+    { Service, Command } = require('realityserver-client'),
     WS = require('websocket').w3cwebsocket;
 
 
