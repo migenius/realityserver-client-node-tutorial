@@ -48,7 +48,7 @@ require('yargs')
 async function render(argv) {
     const { host,port,ssl,scene_file,width,height,max_samples,filename } = argv;
 
-    const url = `${(ssl ? 'wss://' : 'ws://')}${host}:${port}/render_loop_stream/`;
+    const url = `${(ssl ? 'wss://' : 'ws://')}${host}:${port}/service/`;
 
     console.log(`connecting to: ${url}`);
 
