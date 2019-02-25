@@ -1,6 +1,6 @@
 const path = require('path'),
     fs = require('fs'),
-    { Command,Command_error,Error: Rs_error,Helpers,Service } = require('realityserver-client'),
+    { Command,Command_error,Error: Rs_error,Utils,Service } = require('realityserver-client'),
     WS = require('websocket').w3cwebsocket;
 
 const service = new Service();
@@ -50,7 +50,7 @@ function render_scene(scene_info, width, height, max_samples, filename) {
     return new Promise(async (resolve,reject) => {
         const camera = scene_info.camera;
         const options = scene_info.options;
-        const user_scope_name = `scope_${Helpers.create_random_string(8)}`;
+        const user_scope_name = `scope_${Utils.create_random_string(8)}`;
 
         const [ image ] = await service.queue_commands()
             .queue(new Command('create_scope', { scope_name: user_scope_name, parent_scope: scene_info.scope_name }))
