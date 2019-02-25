@@ -87,7 +87,7 @@ function render_scene(scene_info, width, height, max_samples, filename) {
                     }
                 }),true)
             .queue(new Command('delete_scope', { scope_name: user_scope_name }))
-            .execute().catch(err => [err]);
+            .execute().catch(err => [ err ]);
 
         if (image instanceof Command_error) {
             reject(`render error: ${image.message}`);
