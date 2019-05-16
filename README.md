@@ -1,4 +1,4 @@
-# node-render
+# realityserver-client-node-tutorial
 
 A simple Node.js example rendering script for [migenius's](https://migenius.com "migenius") [RealityServer](https://www.migenius.com/products/realityserver "RealityServer")®.
 
