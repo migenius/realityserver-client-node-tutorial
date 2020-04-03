@@ -178,6 +178,7 @@ async function load_and_render(argv) {
         console.log(`image saved to ${filename}`);
     } catch (err) {
         console.error(err);
+        return;
     }
     service.close();
 }
